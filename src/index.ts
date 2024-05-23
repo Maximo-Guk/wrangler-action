@@ -15,6 +15,7 @@ import semverEq from "semver/functions/eq";
 import { exec, execShell } from "./exec";
 import { checkWorkingDirectory, semverCompare } from "./utils";
 import { getPackageManager } from "./packageManagers";
+import { createGitHubComment } from "./github";
 
 const DEFAULT_WRANGLER_VERSION = "3.13.2";
 
@@ -33,6 +34,7 @@ const config = {
 	COMMANDS: getMultilineInput("command"),
 	QUIET_MODE: getBooleanInput("quiet"),
 	PACKAGE_MANAGER: getInput("packageManager"),
+	GITHUB_TOKEN: getInput("gitHubToken"),
 } as const;
 
 const packageManager = getPackageManager(config.PACKAGE_MANAGER, {
@@ -71,6 +73,7 @@ async function main() {
 		await uploadSecrets();
 		await wranglerCommands();
 		await execCommands(getMultilineInput("postCommands"), "post");
+		await createGitHubComment(config['GITHUB_TOKEN'])
 		info("🏁 Wrangler Action completed", true);
 	} catch (err: unknown) {
 		err instanceof Error && error(err.message);
