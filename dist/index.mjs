@@ -28699,18 +28699,22 @@ const PACKAGE_MANAGERS = {
     npm: {
         install: "npm i",
         exec: "npx",
+        execNoInstall: "npx --no-install",
     },
     yarn: {
         install: "yarn add",
         exec: "yarn",
+        execNoInstall: "yarn",
     },
     pnpm: {
         install: "pnpm add",
         exec: "pnpm exec",
+        execNoInstall: "pnpm exec",
     },
     bun: {
         install: "bun i",
         exec: "bunx",
+        execNoInstall: "bun run",
     },
 };
 function detectPackageManager(workingDirectory = ".") {
@@ -28809,7 +28813,7 @@ async function installWrangler() {
     let installedVersion = "";
     let installedVersionSatisfiesRequirement = false;
     try {
-        const { stdout } = await (0,exec.getExecOutput)(packageManager.exec, ["wrangler", "--version"], {
+        const { stdout } = await (0,exec.getExecOutput)(packageManager.execNoInstall, ["wrangler", "--version"], {
             cwd: config["workingDirectory"],
             silent: config.QUIET_MODE,
         });
